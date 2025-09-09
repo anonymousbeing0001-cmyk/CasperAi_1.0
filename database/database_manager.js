@@ -36,7 +36,7 @@ class DatabaseManager {
       }
     }
     
-    if (process.env.FIREBASE_CONFIG) {
+    if (process.env.FIREBASE_CONFIG || process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
       const success = initFirebase();
       if (success) {
         this.primaryDB = {

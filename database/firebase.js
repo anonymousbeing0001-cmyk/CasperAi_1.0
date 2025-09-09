@@ -5,19 +5,32 @@ let isInitialized = false;
 
 function initFirebase() {
   try {
-    if (!process.env.FIREBASE_CONFIG) {
-      console.log('❌ Firebase config not provided');
-      return false;
+    // Check for Firebase config in environment variables
+    if (process.env.FIREBASE_CONFIG) {
+      const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+      
+      db = admin.firestore();
+      isInitialized = true;
+      return true;
     }
     
-    const serviceAccount = JSON.parse(process.env.FIREBASE_CONFIG);
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
+    // Check for Firebase service account JSON
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+      const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+      
+      db = admin.firestore();
+      isInitialized = true;
+      return true;
+    }
     
-    db = admin.firestore();
-    isInitialized = true;
-    return true;
+    console.log('❌ Firebase config not provided');
+    return false;
   } catch (error) {
     console.error('Firebase initialization error:', error);
     return false;
