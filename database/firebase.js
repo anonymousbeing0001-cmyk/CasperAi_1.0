@@ -1,0 +1,1 @@
+// Firebase JavaScript configuration goes here
